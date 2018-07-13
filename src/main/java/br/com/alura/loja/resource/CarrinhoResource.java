@@ -15,9 +15,17 @@ public class CarrinhoResource {
 	@Path("{id}")  //carrinhos/id
 	@GET 
 	@Produces(MediaType.APPLICATION_XML) // mostra que esta solicitação GET irá produzir uma resposta no formato XML ao JAX-RS
-	public String buscar(@PathParam("id") long id) {			
+	public String buscarPorXML(@PathParam("id") long id) {			
 		Carrinho carrinho = new CarrinhoDAO().busca(id);
 		
 		return carrinho.toXML();
+	}
+	
+	@Path("{id}") @GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public String buscarPorJson(@PathParam("id") long id) {
+		Carrinho carrinho = new CarrinhoDAO().busca(id);
+		
+		return carrinho.toJson();
 	}
 }
