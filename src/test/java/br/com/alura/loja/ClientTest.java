@@ -22,6 +22,8 @@ import junit.framework.Assert;
 public class ClientTest {
 
 	private HttpServer server;
+	private Client client;
+	private WebTarget target;
 
 	@Before
 	public void antesDoTesteStartServer() {
@@ -37,8 +39,8 @@ public class ClientTest {
 	@Ignore
 	public void testaConexaoComOServidor() {
 
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://www.mocky.io");
+		this.client = ClientBuilder.newClient();
+		this.target = client.target("http://www.mocky.io");
 		String conteudo = target.path("/v2/52aaf5deee7ba8c70329fb7d").request().get(String.class); // devolver uma String
 																									
 		System.out.println(conteudo);
@@ -49,8 +51,8 @@ public class ClientTest {
 	@Test
 	@Ignore
 	public void testaQueAConexaoComOServidorFuncionaNoPathDeProjetos() {
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:8080/");
+		client = ClientBuilder.newClient();
+		target = client.target("http://localhost:8080/");
 		String conteudo = target.path("projetos").request().get(String.class);
 		Assert.assertTrue(conteudo.contains("<nome>Minha loja"));
 	}
@@ -59,8 +61,8 @@ public class ClientTest {
 	@Ignore
 	public void testaQueBuscaUmCarrinhoTrazOCarrinhoEsperado() {
 
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:8080/");
+		client = ClientBuilder.newClient();
+		target = client.target("http://localhost:8080/");
 		String conteudo = target.path("carrinhos/1").request().get(String.class);
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
 		Assert.assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
@@ -70,8 +72,8 @@ public class ClientTest {
 
 	@Test
 	public void testaMetodoPOST() {
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:8080");
+		client = ClientBuilder.newClient();
+		target = client.target("http://localhost:8080");
 
 		Carrinho carrinho = new Carrinho();
 		carrinho.adiciona(new Produto(314L, "Tablet", 999, 1));
@@ -82,7 +84,11 @@ public class ClientTest {
 		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
 
 		Response response = target.path("/carrinhos").request().post(entity);
-		Assert.assertEquals("<status>success</status>", response.readEntity(String.class));
+		Assert.assertEquals(201, response.getStatus()); //o código 201 significa que um recurso foi criado, created.
+		
+		String location = response.getHeaderString("Location");
+		String conteudo = client.target(location).request().get(String.class);
+		Assert.assertTrue(conteudo.contains("Tablet"));
 	}
 
 
