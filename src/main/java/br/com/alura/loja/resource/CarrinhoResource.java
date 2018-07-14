@@ -3,6 +3,7 @@ package br.com.alura.loja.resource;
 import java.net.URI;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,7 +29,7 @@ public class CarrinhoResource {
 		return carrinho.toXML();
 	}
 	
-	@POST
+	@POST  //no caso, o path será "carrinhos"
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response adiciona(String conteudo) {
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
@@ -36,6 +37,14 @@ public class CarrinhoResource {
 		URI uri = URI.create("/carrinhos/" + carrinho.getId());
 		
 		return Response.created(uri).build(); //o código 201 significa que um recurso foi criado, created.
+	}
+	
+	@Path("{id}/produtos/{produtoId}")
+	@DELETE
+	public Response removeItemDoProduto(@PathParam("id") long id, @PathParam("produtoId") long produtoId) {
+		Carrinho carrinho = new CarrinhoDAO().busca(id);
+		carrinho.remove(produtoId);
+		return Response.ok().build();
 	}
 	
 //	@Path("{id}") @GET
