@@ -11,10 +11,7 @@ public class Server {
 
 	public static void main(String[] args) throws IOException {
 		HttpServer server = inicializarServer();
-		
-		System.out.println("Servidor rodando...");
 		System.in.read();
-		
 		server.stop();
 	}
 
