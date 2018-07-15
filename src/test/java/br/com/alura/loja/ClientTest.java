@@ -8,6 +8,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,6 +30,10 @@ public class ClientTest {
 	@Before
 	public void antesDoTesteStartServer() {
 		server = Server.inicializarServer();
+		ClientConfig config = new ClientConfig();
+		config.register(new LoggingFilter());
+		this.client = ClientBuilder.newClient(config);
+		this.target = client.target("http://localhost:8080");
 	}
 
 	@After
@@ -36,7 +42,6 @@ public class ClientTest {
 	}
 
 	@Test
-	@Ignore
 	public void testaConexaoComOServidor() {
 
 		this.client = ClientBuilder.newClient();
@@ -49,7 +54,6 @@ public class ClientTest {
 	}
 
 	@Test
-	@Ignore
 	public void testaQueAConexaoComOServidorFuncionaNoPathDeProjetos() {
 		client = ClientBuilder.newClient();
 		target = client.target("http://localhost:8080/");
@@ -58,7 +62,6 @@ public class ClientTest {
 	}
 
 	@Test
-	@Ignore
 	public void testaQueBuscaUmCarrinhoTrazOCarrinhoEsperado() {
 
 		client = ClientBuilder.newClient();
