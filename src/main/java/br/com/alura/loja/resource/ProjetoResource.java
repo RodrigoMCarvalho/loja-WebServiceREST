@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 
 import com.thoughtworks.xstream.XStream;
 
-import br.com.alura.loja.dao.CarrinhoDAO;
 import br.com.alura.loja.dao.ProjetoDAO;
 import br.com.alura.loja.modelo.Projeto;
 
