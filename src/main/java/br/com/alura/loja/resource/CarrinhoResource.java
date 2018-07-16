@@ -26,16 +26,16 @@ public class CarrinhoResource {
 	@GET
 	@Produces(MediaType.APPLICATION_XML) // mostra que esta solicitação GET irá produzir uma resposta no formato XML ao
 											// JAX-RS
-	public String buscarPorXML(@PathParam("id") long id) {
+	public Carrinho buscarPorXML(@PathParam("id") long id) {
 		Carrinho carrinho = new CarrinhoDAO().busca(id);
-
-		return carrinho.toXML();
+		
+		return carrinho;
+	 // return carrinho.toXML();  - String
 	}
 
 	@POST // no caso, o path será "carrinhos"
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response adiciona(String conteudo) {
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
+	public Response adiciona(Carrinho carrinho) {
 		new CarrinhoDAO().adiciona(carrinho);
 		URI uri = URI.create("/carrinhos/" + carrinho.getId());
 
@@ -53,10 +53,10 @@ public class CarrinhoResource {
 
 	@Path("{id}/produtos/{produtoId}")
 	@PUT
-	public Response alteraProduto(@PathParam("id") long id, @PathParam("produtoId") long produtoId, String conteudo) {
+	public Response alteraProduto(Produto produto, @PathParam("id") long id, @PathParam("produtoId") long produtoId) {
 		Carrinho carrinho = new CarrinhoDAO().busca(id);
-		Produto produto = (Produto) new XStream().fromXML(conteudo);
 		carrinho.troca(produto);
+		
 		return Response.ok().build();
 	}
 

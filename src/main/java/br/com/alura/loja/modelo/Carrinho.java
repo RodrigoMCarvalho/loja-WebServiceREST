@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 
+@XmlRootElement  //elemento válido do JAXB
+@XmlAccessorType(XmlAccessType.FIELD)		//todos os campos serializados por padrão
 public class Carrinho {
 
 	private List<Produto> produtos = new ArrayList<Produto>();

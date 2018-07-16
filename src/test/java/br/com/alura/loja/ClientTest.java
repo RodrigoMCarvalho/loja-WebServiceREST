@@ -14,8 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.thoughtworks.xstream.XStream;
-
 import br.com.alura.loja.modelo.Carrinho;
 import br.com.alura.loja.modelo.Produto;
 import junit.framework.Assert;
@@ -48,35 +46,23 @@ public class ClientTest {
 		String conteudo = target.path("/v2/52aaf5deee7ba8c70329fb7d").request().get(String.class); // devolver uma String
 																									
 		System.out.println(conteudo);
-
 		Assert.assertTrue(conteudo.contains("Rua Vergueiro"));
 	}
 
 	@Test
 	public void testaQueAConexaoComOServidorFuncionaNoPathDeProjetos() {
-		client = ClientBuilder.newClient();
-		target = client.target("http://localhost:8080/");
 		String conteudo = target.path("projetos").request().get(String.class);
 		Assert.assertTrue(conteudo.contains("<nome>Minha loja"));
 	}
 
 	@Test
 	public void testaQueBuscaUmCarrinhoTrazOCarrinhoEsperado() {
-
-		client = ClientBuilder.newClient();
-		target = client.target("http://localhost:8080/");
-		String conteudo = target.path("carrinhos/1").request().get(String.class);
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
+		Carrinho carrinho = target.path("carrinhos/1").request().get(Carrinho.class);
 		Assert.assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
-
-		server.stop();
 	}
 
 	@Test
 	public void testaMetodoPOST() {
-		client = ClientBuilder.newClient();
-		target = client.target("http://localhost:8080");
-
 		Carrinho carrinho = new Carrinho();
 		carrinho.adiciona(new Produto(314L, "Tablet", 999, 1));
 		carrinho.setRua("Rua Vergueiro");
